@@ -1,0 +1,36 @@
+$gray: rgb(226, 226, 226);
+
+.modal {
+    background-color: white;
+    border: solid 1px $gray;
+    border-radius: 4px;
+
+    &__header {
+        border-bottom: solid 1px $gray;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        padding: 6px 12px;
+        align-items: center;
+    }
+
+    &__title {
+        margin: 0;
+        font-weight: 500;
+    }
+
+    &__close {
+        border: none;
+        background-color: transparent;
+        font-size: inherit;
+        padding: 3px;
+        cursor: pointer;
+    
+        &:hover {
+            opacity: 0.75;
+        }
+    }
+
+    &__content {
+        min-height: 20px;
+    }
+}

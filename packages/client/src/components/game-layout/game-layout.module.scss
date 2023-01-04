@@ -1,0 +1,45 @@
+$gray: rgb(226, 226, 226);
+
+.game-layout {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    height: 100%;
+    width: 100%;
+
+    &__nav {
+        padding: 12px 16px;
+        display: flex;
+        justify-content: center;
+        border-bottom: solid 1px $gray;
+
+        &__content {
+            width: 100%;
+            max-width: 1024px;
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+        }
+
+        &__button {
+            border: none;
+            background-color: transparent;
+            font-size: inherit;
+            font-family: inherit;
+            cursor: pointer;
+            padding: 2px 4px;
+
+            &:not(:disabled):hover {
+                opacity: 0.75;
+            }
+        }
+
+        &__title {
+            font-size: 1.1em;
+            font-weight: 500;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+}

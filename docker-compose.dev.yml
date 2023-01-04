@@ -1,0 +1,19 @@
+version: '3.3'
+
+services:
+  server:
+    build:
+      context: ./packages/server
+      target: dev
+    volumes:
+      - ./packages/server:/app
+    ports:
+      - ${SERVER_PORT:-5500}:3000
+  client:
+    build:
+      context: ./packages/client
+      target: dev
+    volumes:
+      - ./packages/client:/app
+    ports:
+      - ${SERVER_PORT:-3000}:3000

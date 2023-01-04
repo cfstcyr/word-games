@@ -1,0 +1,287 @@
+// $accent: rgb(242, 219, 80);
+// $gray: rgb(226, 226, 226);
+
+@import '../../styles/utils/variables';
+
+.game {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    align-items: center;
+    width: 100%;
+    max-width: 300px;
+    margin: 0 auto;
+
+    &--loading {
+        pointer-events: none;
+
+        .input {
+            &__cursor {
+                display: none;
+            }
+        }
+
+        .letters {
+            &__letter {
+                @keyframes pulse-opacity {
+                    0% {
+                        opacity: 1;
+                    }
+                    50% {
+                        opacity: 0.55;
+                    }
+                    100% {
+                        opacity: 1;
+                    }
+                }
+                
+                animation: pulse-opacity 1.5s linear 0s infinite;
+            }
+        }
+
+        .buttons {
+            &__button {
+                opacity: 0.55;
+            }
+        }
+    }
+}
+
+.score {
+    height: 10px;
+    background-color: $color--gray;
+    width: 100%;
+    border-radius: 4px;
+
+    &__value {
+        height: 100%;
+        background-color: $color--spelling-bee;
+        border-radius: 4px;
+    }
+}
+
+.found {
+    border: solid 1px $color--gray;
+    padding: 6px 12px;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    height: calc(1em + 16px);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 6px;
+    align-items: center;
+    cursor: pointer;
+
+    &__words {
+        align-items: center;
+        display: flex;
+        overflow: hidden;
+        gap: 8px;
+        text-transform: capitalize;
+    
+        &:empty::after {
+            content: 'Your words...';
+            font-size: 0.9em;
+            opacity: 0.55;
+        }
+
+        p {
+            margin: 0;
+        }
+    }
+}
+
+.message {
+    height: calc(1em + 10px);
+    font-size: 0.9em;
+
+    &__error,
+    &__message {
+        padding: 4px 8px;
+        border-radius: 4px;
+        text-transform: capitalize;
+        margin: 0;
+    }
+
+    &__error {
+        background-color: black;
+        color: white;
+    }
+
+    &__message {
+        @keyframes moveup {
+            from {
+                translate: 0 10px;
+            }
+            to {
+                translate: 0 -10px;
+            }
+        }
+
+        background-color: white;
+        border: solid 1px $color--gray;
+        animation: moveup 0.8s linear;
+    }
+}
+
+.letters {
+    $size: 65px;
+    $sizex: $size * 0.89;
+    $space: 8px;
+    position: relative;
+
+    &__letter {
+        background-color: $color--gray;
+        font-size: 1.25em;
+        font-weight: 700;
+        height: $size;
+        width: $sizex;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        border: none;
+        clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+        cursor: pointer;
+
+        p {
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        &:hover {
+            background-color: darken($color--gray, 4);
+        }
+
+        &:active {
+            background-color: darken($color--gray, 9);
+        }
+
+        &--obligatory {
+            background-color: $color--spelling-bee;
+
+            &:hover {
+                background-color: darken($color--spelling-bee, 6);
+            }
+
+            &:active {
+                background-color: darken($color--spelling-bee, 12);
+            }
+        }
+    }
+
+    &__letter--obligatory {
+        position: absolute;
+        top: $size + $space - ($size * 0.25);
+        left: $sizex + $space;
+    }
+
+    &__others {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        gap: $space;
+        justify-content: center;
+
+        &__line {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            justify-content: center;
+            gap: $space;
+
+            &--2 {
+                gap: $space * 2 + $sizex;
+            }
+
+            &:not(:last-child) {
+                .letters__letter {
+                    margin-bottom: -$size * 0.25;
+                }
+            }
+        }
+    }
+}
+
+.buttons {
+    display: flex;
+    gap: 12px;
+
+    &__button {
+        border: solid 1px $color--gray;
+        background-color: white;
+        font-size: inherit;
+        font-family: inherit;
+        border-radius: 100px;
+        padding: 6px 12px;
+        cursor: pointer;
+
+        &:hover {
+            background-color: darken(white, 2);
+        }
+
+        &:active {
+            background-color: darken(white, 6);
+        }
+    }
+}
+
+.input {
+    font-size: 2.2em;
+    line-height: 1em;
+    height: 1em;
+    min-width: 12px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+
+    &__letters {
+        font-weight: 700;
+
+        &__letter {
+            &--obligatory {
+                color: $color--spelling-bee;
+            }
+        }
+    }
+
+    &__cursor {
+        @keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+        @-webkit-keyframes blink-animation {
+            to {
+                visibility: hidden;
+            }
+        }
+
+        height: 100%;
+        width: 3px;
+        background-color: $color--spelling-bee;
+        animation: blink-animation 1s steps(2, start) infinite;
+        // -webkit-animation: blink-animation 1s steps(3, start) infinite;
+    }
+
+    &--error {
+        @keyframes wiggle {
+            0% {
+                translate: -2px;
+            }
+
+            50% {
+                translate: 2px;
+            }
+
+            100% {
+                translate: -2px;
+            }
+        }
+
+        animation: wiggle 0.25s linear 0s 2;
+    }
+}

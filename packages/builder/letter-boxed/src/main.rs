@@ -3,20 +3,24 @@ mod utils;
 mod classes;
 
 use std::{
-    fs::{ self, OpenOptions },
+    fs::{  OpenOptions },
     sync::{ Mutex, Arc },
-    collections::HashSet,
     io::Write,
     time::Duration,
 };
 
 use itertools::Itertools;
-use classes::{ dictionary::DictionaryNode, letter_boxed::LetterBoxed };
+use classes::{
+    dictionary::DictionaryNode,
+    letter_boxed::LetterBoxed,
+    existing_letters::ExistingLetters,
+};
 use threadpool::ThreadPool;
 use colored::{ Colorize, ColoredString };
 use utils::threads::{ timeout_thread, TimeoutThread };
 
-const ALPHABET: &str = "abcdefghijklmnopqrstuvwxyz";
+use crate::{constants::file::TIMEOUT_LETTERS, classes::letter_boxed::Objective};
+
 const CONCURRENCY: usize = 20;
 const FILE_PATH: &str = "words.txt";
 const TIMEOUT: Duration = Duration::from_secs(300);
@@ -37,25 +41,9 @@ fn main() {
         "assets/dictionaries/fr.txt".into()
     );
 
-    let already_found = String::from_utf8_lossy(&fs::read(FILE_PATH).unwrap())
-        .parse::<String>()
-        .unwrap();
+    let mut existing_letters = ExistingLetters::new(&FILE_PATH.into());
 
-    let existing_values: HashSet<usize> = HashSet::from_iter(
-        already_found
-            .split_whitespace()
-            .map(|line|
-                line
-                    .split(",")
-                    .into_iter()
-                    .collect::<Vec<&str>>()
-                    .first()
-                    .unwrap()
-                    .parse::<usize>()
-                    .unwrap()
-            )
-            .collect::<Vec<usize>>()
-    );
+    existing_letters.get_existing_letters(false, false);
 
     let dictionary = Arc::new(Mutex::new(dict));
     let file = Arc::new(
@@ -65,90 +53,75 @@ fn main() {
     );
 
     let pool = ThreadPool::new(CONCURRENCY);
+    let mut i = 0;
 
-    for (i, letters) in ALPHABET.chars()
-        .into_iter()
-        .combinations(12)
-        .enumerate() {
-        if existing_values.contains(&i) {
+    loop {
+        let letters = LetterBoxed::random_letters();
+
+        if existing_letters.letters_exists(&letters) {
             continue;
         }
+        existing_letters.add_letters(&letters);
 
         let dictionary = dictionary.clone();
         let file = file.clone();
 
         pool.execute(move || {
             let letters_chunk: Arc<Mutex<Vec<Vec<char>>>> = Arc::new(
-                Mutex::new(
-                    letters
-                        .chunks(3)
-                        .collect::<Vec<&[char]>>()
-                        .into_iter()
-                        .map(|side| side.to_vec())
-                        .collect()
-                )
+                Mutex::new(letters)
             );
 
             let f1 = file.clone();
             let l1 = letters_chunk.clone();
 
-            let completion = timeout_thread(
-                move || {
-                    let dict = dictionary.lock().unwrap();
-                    let letters_chunk_lock = l1.lock().unwrap();
+            let completion = timeout_thread(move || {
+                let dict = dictionary.lock().unwrap();
+                let letters_chunk_lock = l1.lock().unwrap();
 
-                    println!(
-                        "{}:\t{} for {:?}",
-                        color(&i),
-                        "Start".bold().blue(),
-                        letters_chunk_lock
-                    );
+                println!(
+                    "{}:\t{} for {:?}",
+                    color(&i),
+                    "Start".bold().blue(),
+                    letters_chunk_lock
+                );
 
-                    let words = LetterBoxed::get_word_list(
-                        &letters_chunk_lock,
-                        &dict
-                    );
+                let words = LetterBoxed::get_word_list(
+                    &letters_chunk_lock,
+                    &dict
+                );
 
-                    drop(dict);
-                    drop(letters_chunk_lock);
+                drop(dict);
+                drop(letters_chunk_lock);
 
-                    let objective = LetterBoxed::check_words(&words);
+                let objective = LetterBoxed::check_words(&words);
 
-                    let a: i8 = match objective {
-                        Some(o) => i8::try_from(o).unwrap(),
-                        None => -1,
-                    };
+                match objective {
+                    Objective::Value(value) =>
+                        println!(
+                            "{}:\t{} {}",
+                            color(&i),
+                            "Success".bold().green(),
+                            value
+                        ),
+                    Objective::Impossible =>
+                        println!(
+                            "{}:\t{}",
+                            color(&i),
+                            "Impossible".bold().red()
+                        ),
+                }
 
-                    match objective {
-                        Some(o) =>
-                            println!(
-                                "{}:\t{} {}",
-                                color(&i),
-                                "Success".bold().green(),
-                                o
-                            ),
-                        None =>
-                            println!(
-                                "{}:\t{}",
-                                color(&i),
-                                "Impossible".bold().red()
-                            ),
-                    }
-
-                    if
-                        let Err(e) = writeln!(
-                            f1.lock().unwrap(),
-                            "{},\"{}\",{}",
-                            &i,
-                            l1.lock().unwrap().concat().into_iter().join(","),
-                            a
-                        )
-                    {
-                        eprintln!("Cannot write to file:{}", e);
-                    }
-                },
-                TIMEOUT
-            );
+                if
+                    let Err(e) = writeln!(
+                        f1.lock().unwrap(),
+                        "\"{}\",{}",
+                        l1.lock().unwrap().concat().into_iter().join(","),
+                        i16::from(objective),
+                    )
+                {
+                    eprintln!("Cannot write to file:{}", e);
+                }
+            }, TIMEOUT);
 
             match completion {
                 TimeoutThread::Timeout => {
@@ -157,10 +130,14 @@ fn main() {
                     if
                         let Err(e) = writeln!(
                             file.lock().unwrap(),
-                            "{},\"{}\",{}",
-                            &i,
-                            letters_chunk.lock().unwrap().concat().into_iter().join(","),
-                            -2
+                            "\"{}\",{}",
+                            letters_chunk
+                                .lock()
+                                .unwrap()
+                                .concat()
+                                .into_iter()
+                                .join(","),
+                            TIMEOUT_LETTERS
                         )
                     {
                         eprintln!("Cannot write to file:{}", e);
@@ -171,7 +148,9 @@ fn main() {
 
             println!("{}:\t{}", color(&i), "Completed".bold());
         });
-    }
 
-    while pool.active_count() > 0 {}
+        while pool.active_count() > CONCURRENCY {}
+
+        i += 1;
+    }
 }

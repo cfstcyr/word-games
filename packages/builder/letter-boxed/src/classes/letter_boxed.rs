@@ -1,18 +1,38 @@
 use std::collections::HashMap;
+use itertools::Itertools;
 use queue::Queue;
+use rand::random;
 use substring::Substring;
 
 use super::dictionary::DictionaryNode;
-use crate::constants::letter_boxed::{ MIN_WORD_LENGTH, MAX_WORD_COUNT };
+use crate::constants::file::IMPOSSIBLE_LETTERS;
+use crate::constants::letter_boxed::{
+    MIN_WORD_LENGTH,
+    MAX_WORD_COUNT,
+    ALPHABET,
+    SIDE_LENGHT,
+};
 use crate::utils::array::first;
 use crate::utils::string::unique_sort;
+
+pub enum Objective {
+    Value(usize),
+    Impossible,
+}
+
+impl From<Objective> for i16 {
+    fn from(obj: Objective) -> Self {
+        match obj {
+            Objective::Value(v) => i16::try_from(v).unwrap(),
+            Objective::Impossible => IMPOSSIBLE_LETTERS,
+        }
+    }
+}
 
 pub struct LetterBoxed {}
 
 impl LetterBoxed {
-    pub fn check_words(
-        words: &HashMap<char, Vec<String>>
-    ) -> Option<usize> {
+    pub fn check_words(words: &HashMap<char, Vec<String>>) -> Objective {
         let mut words_list: Vec<Vec<String>> = words
             .values()
             .cloned()
@@ -31,7 +51,7 @@ impl LetterBoxed {
 
         while let Some(c) = current {
             if LetterBoxed::is_using_all_letters(&c) {
-                return Some(c.len());
+                return Objective::Value(c.len());
             } else if c.len() < MAX_WORD_COUNT {
                 for next in words
                     .get(&c.concat().chars().last().unwrap())
@@ -47,7 +67,7 @@ impl LetterBoxed {
             current = stack.dequeue();
         }
 
-        None
+        Objective::Impossible
     }
 
     fn is_using_all_letters(words: &Vec<String>) -> bool {
@@ -158,5 +178,26 @@ impl LetterBoxed {
         }
 
         map
+    }
+
+    pub fn random_letters() -> Vec<Vec<char>> {
+        let mut alphabet = ALPHABET.chars().collect_vec();
+        let mut letters: Vec<char> = Vec::new();
+
+        for _ in 0..12 {
+            let index = random::<usize>() % alphabet.len();
+            letters.push(alphabet[index]);
+            alphabet.remove(index);
+        }
+
+        letters
+            .chunks(SIDE_LENGHT)
+            .map(|side|
+                side
+                    .into_iter()
+                    .map(|c| *c)
+                    .collect_vec()
+            )
+            .collect_vec()
     }
 }

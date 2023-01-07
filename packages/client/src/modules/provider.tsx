@@ -5,15 +5,18 @@ import {
     DataProvider,
     ModalProvider,
 } from '../contexts';
+import { ScreenProvider } from '../contexts/screen-context/provider';
 
 export const Provider: React.FC<PropsWithChildren> = ({ children }) => {
     return (
         <AlertProvider>
-            <ModalProvider>
-                <ApiProvider>
-                    <DataProvider>{children}</DataProvider>
-                </ApiProvider>
-            </ModalProvider>
+            <ScreenProvider>
+                <ModalProvider>
+                    <ApiProvider>
+                        <DataProvider>{children}</DataProvider>
+                    </ApiProvider>
+                </ModalProvider>
+            </ScreenProvider>
         </AlertProvider>
     );
 };

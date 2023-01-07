@@ -1,0 +1,51 @@
+@keyframes pulse-opacity {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.55;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes wiggle {
+    0% {
+        translate: -2px;
+    }
+
+    50% {
+        translate: 2px;
+    }
+
+    100% {
+        translate: -2px;
+    }
+}
+
+@keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+@-webkit-keyframes blink {
+    to {
+        visibility: hidden;
+    }
+}
+
+@keyframes moveup {
+    from {
+        translate: 0 10px;
+    }
+    to {
+        translate: 0 -10px;
+    }
+}
+
+@keyframes pop {
+    0% { scale: 1; }
+    50% { scale: 1.3; }
+    100% { scale: 1; }
+}

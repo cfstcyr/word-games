@@ -1,0 +1,39 @@
+@import '../../styles/utils/animations';
+@import '../../styles/utils/variables';
+
+.game-input {
+    font-size: 2.2em;
+    line-height: 1em;
+    height: 1em;
+    min-width: 200px;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    font-weight: 700;
+    width: min-content;
+    align-items: center;
+    justify-self: center;
+
+    &__cursor {
+        height: 100%;
+        width: 3px;
+        background-color: $color--spelling-bee;
+        animation: blink 1s steps(2, start) infinite;
+        -webkit-animation: blink 1s steps(2, start) infinite;
+
+        &--hide {
+            display: none;
+        }
+    }
+
+    &--error {
+        animation: wiggle 0.25s linear 0s 2;
+    }
+
+    &--border-bottom {
+        border-bottom: solid 3px black;
+        padding-bottom: 16px;
+    }
+}

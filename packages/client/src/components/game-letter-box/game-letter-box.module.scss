@@ -1,0 +1,118 @@
+@import '../../styles/utils/variables';
+
+.game-letter-box {
+    $size: 225px;
+    $spacing: 12px;
+    $dot: 14px;
+    $thick: 3px;
+
+    position: relative;
+
+    &__box {
+        height: $size;
+        width: $size;
+        background-color: white;
+        border: solid $thick black;
+        grid-row-start: 2;
+        grid-column-start: 2;
+        box-sizing: border-box;
+
+        canvas {
+            height: 100%;
+            width: 100%;
+        }
+    }
+
+    &__letters,
+    &__dots {
+        display: grid;
+        grid-template-columns: auto $size auto;
+        grid-template-rows: auto $size auto;
+        justify-content: center;
+    }
+
+    &__side,
+    &__dot-side {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: -($dot + 8)/2;
+
+        &:nth-child(1) {
+            grid-column-start: 2;
+
+            .game-letter-box__letter {
+                flex-direction: column;
+            }
+        }
+        &:nth-child(2) {
+            flex-direction: column;
+            grid-row-start: 2;
+            margin-right: -($dot + 8)/2;
+        }
+        &:nth-child(3) {
+            flex-direction: column;
+            grid-row-start: 2;
+            grid-column-start: 3;
+            margin-left: -($dot + 8)/2;
+
+            .game-letter-box__letter {
+                flex-direction: row-reverse;
+            }
+        }
+        &:nth-child(4) {
+            grid-row-start: 3;
+            grid-column-start: 2;
+            margin-top: -($dot + 8)/2;
+
+            .game-letter-box__letter {
+                flex-direction: column-reverse;
+            }
+        }
+    }
+
+    &__letter {
+        display: flex;
+        align-items: center;
+        gap: $spacing;
+        font-size: 1.9em;
+        text-transform: uppercase;
+        cursor: pointer;
+        z-index: 1;
+        color: white;
+        
+        span {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 1em;
+            width: 1em;
+        }
+
+        &--used {
+            color: black;
+        }
+
+        &--current {
+            font-weight: 700;
+            color: black;
+        }
+    }
+
+    &__dot {
+        height: $dot;
+        width: $dot;
+        background-color: white;
+        border: solid $thick black;
+        border-radius: $dot;
+
+        &--used {
+            border-color: $color--letter-boxed--faded;
+        }
+
+        &--current {
+            border-color: $color--letter-boxed--faded;
+            background-color: black;
+        }
+    }
+}

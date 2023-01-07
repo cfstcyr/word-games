@@ -1,6 +1,6 @@
 .alerts {
     &__container {
-        position: absolute;
+        position: fixed;
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
@@ -12,6 +12,7 @@
         box-sizing: border-box;
         align-items: center;
         pointer-events: none;
+        z-index: 10000;
     }
 
     &__item {
@@ -25,15 +26,15 @@
         pointer-events: none;
 
         &--error {
-            background-color: rgba(tomato, 0.15);
+            background-color: lighten(tomato, 20);
         }
 
         &--warn {
-            background-color: rgba(yellow, 0.15);
+            background-color: lighten(yellow, 20);
         }
 
         &--success {
-            background-color: rgba(green, 0.15);
+            background-color: lighten(green, 20);
         }
     }
 }

@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { ComponentProps, PropsWithChildren, ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon } from '../icon';
-import styles from './game-layout.module.scss';
+import styles from './layout.module.scss';
 
 interface GameLayoutNavActionProps {
     content: ReactNode;
@@ -31,39 +31,47 @@ const GameLayoutNavAction: React.FC<GameLayoutNavActionProps> = ({
 };
 
 interface Props {
-    backLink: string;
+    backLink?: string;
     backMessage?: string;
     title?: string;
-
     buttons?: ComponentProps<typeof GameLayoutNavAction>[];
-
     contentClassName?: string;
+    large?: boolean;
 }
 
-export const GameLayout: React.FC<PropsWithChildren<Props>> = ({
+export const Layout: React.FC<PropsWithChildren<Props>> = ({
     children,
     backLink,
     backMessage,
     title,
     buttons,
     contentClassName,
+    large = false,
 }) => {
     return (
-        <div className={styles['game-layout']}>
+        <div
+            className={classNames(styles['game-layout'], {
+                [styles['game-layout--large']]: large,
+            })}
+        >
             <div className={styles['game-layout__nav']}>
                 <div className={styles['game-layout__nav__content']}>
-                    <GameLayoutNavAction
-                        to={backLink}
-                        content={
-                            <>
-                                <Icon
-                                    icon="angle-left"
-                                    style={{ marginRight: 6 }}
-                                />{' '}
-                                {backMessage ?? 'Back'}
-                            </>
-                        }
-                    />
+                    <div>
+                        {backLink && (
+                            <GameLayoutNavAction
+                                to={backLink}
+                                content={
+                                    <>
+                                        <Icon
+                                            icon="angle-left"
+                                            style={{ marginRight: 6 }}
+                                        />{' '}
+                                        {backMessage ?? 'Back'}
+                                    </>
+                                }
+                            />
+                        )}
+                    </div>
 
                     <p className={styles['game-layout__nav__title']}>{title}</p>
 

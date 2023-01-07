@@ -4,8 +4,14 @@ import { useData, useModal } from '../../contexts';
 import { GameSpellingBee } from '../../models/game-spelling-bee';
 import classNames from 'classnames';
 import { shuffle } from '../../utils/random';
-import { GameLayout } from '../../components/game-layout/game-layout';
+import { Layout } from '../../components/layout/layout';
 import { Icon } from '../../components/icon';
+import { ProgressBar } from '../../components/progress-bar/progress-bar';
+import { COLORS } from '../../constants/colors';
+import { Button } from '../../components/button/button';
+import { GameMessage } from '../../components/game-message/game-message';
+import { GameHoneycomb } from '../../components/game-honeycomb/game-honeycomb';
+import { GameInput } from '../../components/game-input/game-input';
 
 const PLAY_DATE = 'spelling-bee-play-date';
 const PLAY_FOUND = 'spelling-bee-play-found';
@@ -134,18 +140,6 @@ export const SpellingBeeGame: React.FC<Props> = ({ isPractice = false }) => {
         setData((d) => (d ? { ...d, letters: shuffle(d.letters) } : d));
     }, []);
 
-    const Key: React.FC<{ letter: string; className?: string }> = ({
-        letter,
-        className,
-    }) => (
-        <button
-            className={classNames(styles['letters__letter'], className)}
-            onClick={() => addLetter(letter)}
-        >
-            <p>{letter}</p>
-        </button>
-    );
-
     const showFoundWords = useCallback(() => {
         showModal({
             title:
@@ -173,26 +167,17 @@ export const SpellingBeeGame: React.FC<Props> = ({ isPractice = false }) => {
     }, [found, showModal]);
 
     return (
-        <GameLayout backLink="/" title="Spelling Bee">
+        <Layout backLink="/" title="Spelling Bee">
             <div
                 className={classNames(styles['game'], {
                     [styles['game--loading']]: !ready,
                 })}
             >
-                <div className={styles['score']}>
-                    <div
-                        className={styles['score__value']}
-                        style={
-                            data
-                                ? {
-                                      width: `${
-                                          (score / data.maxScore) * 100
-                                      }%`,
-                                  }
-                                : {}
-                        }
-                    ></div>
-                </div>
+                <ProgressBar
+                    current={score}
+                    max={data?.maxScore}
+                    color={COLORS.SPELLING_BEE}
+                />
 
                 <div className={styles['found']} onClick={showFoundWords}>
                     <div className={styles['found__words']}>
@@ -203,96 +188,54 @@ export const SpellingBeeGame: React.FC<Props> = ({ isPractice = false }) => {
                     <Icon icon="angle-down" />
                 </div>
 
-                <div className={styles['message']}>
-                    {error && (
-                        <p className={styles['message__error']}>{error}</p>
-                    )}
-                    {message && !error && (
-                        <p className={styles['message__message']}>{message}</p>
-                    )}
-                </div>
+                <GameMessage error={error} message={message} />
 
-                <div
-                    className={classNames(styles['input'], {
-                        [styles['input--error']]: error,
-                    })}
+                <GameInput
+                    hasError={error !== undefined}
+                    cursorColor={COLORS.SPELLING_BEE}
+                    showCursor={ready}
                 >
-                    <div className={styles['input__letters']}>
-                        {inputText.split('').map((l, i) => (
-                            <span
-                                key={i}
-                                className={classNames({
-                                    [styles[
-                                        'input__letters__letter--obligatory'
-                                    ]]: l === data?.obligatoryLetter,
-                                })}
-                            >
-                                {l}
-                            </span>
-                        ))}
-                    </div>
-                    <div className={styles['input__cursor']}></div>
-                </div>
+                    {inputText.split('').map((l, i) => (
+                        <span
+                            key={i}
+                            className={classNames({
+                                [styles['input__letter--obligatory']]:
+                                    l === data?.obligatoryLetter,
+                            })}
+                        >
+                            {l}
+                        </span>
+                    ))}
+                </GameInput>
 
-                <div className={styles['letters']}>
-                    <div className={styles['letters__obligatory']}>
-                        <Key
-                            letter={data?.obligatoryLetter ?? ''}
-                            className={styles['letters__letter--obligatory']}
-                        />
-                    </div>
-                    <div className={styles['letters__others']}>
-                        <div
-                            className={classNames(
-                                styles['letters__others__line'],
-                                styles['letters__others__line--1'],
-                            )}
-                        >
-                            <Key letter={data?.letters[0] ?? ''} />
-                            <Key letter={data?.letters[1] ?? ''} />
-                        </div>
-                        <div
-                            className={classNames(
-                                styles['letters__others__line'],
-                                styles['letters__others__line--2'],
-                            )}
-                        >
-                            <Key letter={data?.letters[2] ?? ''} />
-                            <Key letter={data?.letters[3] ?? ''} />
-                        </div>
-                        <div
-                            className={classNames(
-                                styles['letters__others__line'],
-                                styles['letters__others__line--3'],
-                            )}
-                        >
-                            <Key letter={data?.letters[4] ?? ''} />
-                            <Key letter={data?.letters[5] ?? ''} />
-                        </div>
-                    </div>
-                </div>
+                <GameHoneycomb
+                    letters={data?.letters}
+                    center={data?.obligatoryLetter}
+                    onClick={addLetter}
+                />
 
                 <div className={styles['buttons']}>
-                    <button
-                        className={styles['buttons__button']}
+                    <Button
                         onClick={deleteLetter}
+                        color="gray"
+                        size="small"
+                        ghost
                     >
                         Delete
-                    </button>
-                    <button
-                        className={styles['buttons__button']}
+                    </Button>
+                    <Button
                         onClick={shuffleLetters}
+                        color="gray"
+                        size="small"
+                        ghost
                     >
                         <Icon icon="sync" />
-                    </button>
-                    <button
-                        className={styles['buttons__button']}
-                        onClick={enter}
-                    >
+                    </Button>
+                    <Button onClick={enter} color="gray" size="small" ghost>
                         Enter
-                    </button>
+                    </Button>
                 </div>
             </div>
-        </GameLayout>
+        </Layout>
     );
 };

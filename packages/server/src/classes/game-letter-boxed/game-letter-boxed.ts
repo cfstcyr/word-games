@@ -1,4 +1,3 @@
-import { resolve } from 'path';
 import { autoInjectable } from 'tsyringe';
 import { ALPHABET } from '../../constants/alphabet';
 import {
@@ -13,9 +12,14 @@ import {
     GameLetterBoxedPlay,
 } from '../../models/game/game-letter-boxed';
 import { DictionaryService } from '../../services/dictionary-service/dictionary-service';
-import { WorkerService } from '../../services/worker-service/worker-service';
 import { unique } from '../../utils/string';
 import { Game } from '../game';
+import { writeFileSync } from 'fs';
+import {
+    BOX_SIZE,
+    MAX_WORD_COUNT,
+    MIN_WORD_LENGHT,
+} from '../../constants/game-letter-boxed';
 
 export interface BoxedWord {
     node: DictionaryNodeWord;
@@ -30,18 +34,30 @@ export class GameLetterBoxed extends Game<
     GameLetterBoxedPlay
 > {
     private dictionary: Dictionary;
-    private workerService: WorkerService;
 
     constructor(
         config: GameLetterBoxedConfig,
         dictionayService?: DictionaryService,
-        workerService?: WorkerService,
     ) {
         super(config);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.dictionary = dictionayService!.get(config.language);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.workerService = workerService!;
+    }
+
+    static FromLetters(
+        configs: GameLetterBoxedConfig,
+        letters: string[][],
+        objective: number,
+    ) {
+        const game = new GameLetterBoxed(configs);
+
+        game.data = {
+            ...game.data,
+            letters,
+            objective,
+        };
+
+        return game;
     }
 
     async initialize(): Promise<void> {
@@ -58,8 +74,7 @@ export class GameLetterBoxed extends Game<
 
     play({ words }: GameLetterBoxedPlay): GamePlayResult {
         for (const word of words) {
-            if (word.length < this.config.minWordLength)
-                return { error: 'Too short' };
+            if (word.length < MIN_WORD_LENGHT) return { error: 'Too short' };
             if (!this.dictionary.exists(word))
                 return { error: 'Not in word list' };
         }
@@ -94,7 +109,7 @@ export class GameLetterBoxed extends Game<
         for (let i = 0; i < 4; ++i) {
             const side: string[] = [];
 
-            for (let j = 0; j < this.config.boxSize; ++j) {
+            for (let j = 0; j < BOX_SIZE; ++j) {
                 const index = this.rand(alphabet.length);
                 side.push(alphabet[index]);
                 alphabet.splice(index, 1);
@@ -110,40 +125,26 @@ export class GameLetterBoxed extends Game<
         letters: string[][],
     ): Promise<{ objective: number }> {
         const words = this.getWordsList(letters);
-        // const lettersStr = letters.flat().sort().join('');
+        const lettersStr = letters.flat().sort().join('');
 
         const stack: string[][] = Object.values(words)
             .flat()
             .sort((a, b) => (a.length > b.length ? -1 : 1))
             .map((w) => [w]);
-        // let current: string[] | undefined;
+        let current: string[] | undefined;
 
-        // let i = 0;
-        // while ((current = stack.shift()) && current.length > 0) {
-        //     if (this.isUsingAllLetters(current, lettersStr)) {
-        //         console.log(i, 'iterations', 'success');
-        //         return { objective: current.length };
-        //     } else if (current.length < this.config.maxWordCount) {
-        //         for (const next of words[current.join('').slice(-1)[0]]) {
-        //             if (!this.wordIsRedundant(current, next))
-        //                 stack.push([...current, next]);
-        //         }
-        //     }
-        //     i++;
-        // }
-        // console.log(i, 'iterations', 'error');
+        writeFileSync('words.txt', stack.join('\n'));
 
-        const result = (await this.workerService.first(
-            resolve(__dirname, '../../workers/game-letter-boxed-worker.ts'),
-            {
-                letters,
-                words,
-                stack,
-                maxWordCount: this.config.maxWordCount,
-            },
-        )) as string[];
-
-        if (result.length > 0) return { objective: result.length };
+        while ((current = stack.shift()) && current.length > 0) {
+            if (this.isUsingAllLetters(current, lettersStr)) {
+                return { objective: current.length };
+            } else if (current.length < MAX_WORD_COUNT) {
+                for (const next of words[current.join('').slice(-1)[0]]) {
+                    if (!this.wordIsRedundant(current, next))
+                        stack.push([...current, next]);
+                }
+            }
+        }
 
         throw new Error('Invalid letter combination');
     }
@@ -162,17 +163,9 @@ export class GameLetterBoxed extends Game<
 
     private getWordsList(letters: string[][]): { [K: string]: string[] } {
         const words: { [K: string]: string[] } = {};
-        let noResultCount = 0;
 
         for (const letter of letters.flat()) {
-            const list = this.getWordsListForLetter(letters, letter);
-
-            if (list.length === 0) noResultCount++;
-
-            if (noResultCount > 1)
-                throw new Error('Invalid letter combination');
-
-            words[letter] = list;
+            words[letter] = this.getWordsListForLetter(letters, letter);
         }
 
         return words;
@@ -192,10 +185,7 @@ export class GameLetterBoxed extends Game<
         let current: DictionaryNode | undefined;
 
         while ((current = stack.shift())) {
-            if (
-                current.hasWord() &&
-                current.word.length >= this.config.minWordLength
-            ) {
+            if (current.hasWord() && current.word.length >= MIN_WORD_LENGHT) {
                 wordsMap.set(
                     unique(current.word.slice(1, -2)) + current.word.slice(-1),
                     current.word,

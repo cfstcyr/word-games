@@ -3,6 +3,7 @@ import { cleanEnv, num, str } from 'envalid';
 const env = cleanEnv(process.env, {
     NODE_ENV: str({
         choices: ['development', 'test', 'production', 'staging'],
+        default: 'development',
     }),
     PORT: num({ default: 3000 }),
 

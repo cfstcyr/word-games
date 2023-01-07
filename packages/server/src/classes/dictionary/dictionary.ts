@@ -77,11 +77,9 @@ export class Dictionary extends DictionaryNode {
                 node.nodes.set(letter, child);
             }
 
-            if (i === word.length - 1) {
-                child.word = word;
-            }
-
             node = child;
         }
+
+        node.word = word;
     }
 }

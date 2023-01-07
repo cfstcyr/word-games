@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": ".",
+			"name": "Root"
+		},
+		{
+			"path": "packages/server",
+			"name": "Server"
+		},
+		{
+			"path": "packages/client",
+			"name": "Client"
+		},
+		{
+			"path": "packages/builder/letter-boxed",
+			"name": "Builder - Letter Boxed"
+		}
+	],
+	"settings": {}
+}

@@ -1,73 +1,52 @@
-import React, { ReactNode } from 'react';
+import React from 'react';
 import styles from './index-page.module.scss';
-import { Link } from 'react-router-dom';
-import classNames from 'classnames';
-
-interface GameProps {
-    className?: string;
-    title: ReactNode;
-    buttons?: { content: ReactNode; to: string; className?: string }[];
-}
-
-const Game: React.FC<GameProps> = ({ className, title, buttons }) => (
-    <section className={classNames(styles['index-page__game'], className)}>
-        <h2 className={styles['index-page__game__title']}>{title}</h2>
-        <div className={styles['index-page__game__actions']}>
-            {buttons?.map((button, i) => (
-                <Link key={i} to={button.to}>
-                    <button
-                        className={classNames(
-                            styles['index-page__game__button'],
-                            button.className,
-                        )}
-                    >
-                        {button.content}
-                    </button>
-                </Link>
-            ))}
-        </div>
-    </section>
-);
+import { GameListItem } from '../../components/game-list-item/game-list-item';
+import { COLORS } from '../../constants/colors';
+import { Layout } from '../../components/layout/layout';
 
 export const IndexPage: React.FC = () => {
     return (
-        <div className={styles['index-page']}>
-            <h1 className={styles['index-page__title']}>Word Games</h1>
-
+        <Layout
+            title="Word Games"
+            contentClassName={styles['index-page']}
+            large
+        >
             <section className={styles['index-page__games']}>
-                <Game
+                <GameListItem
                     title="Spelling Bee"
                     className={styles['index-page__game--spelling-bee']}
+                    icon="/games/spelling-bee-card-icon.svg"
+                    color={COLORS.SPELLING_BEE}
                     buttons={[
                         {
-                            content: 'Today',
+                            children: 'Today',
                             to: '/spelling-bee/game',
-                            className:
-                                styles['index-page__game__button--solid'],
                         },
                         {
-                            content: 'Practice',
+                            children: 'Practice',
                             to: '/spelling-bee/practice',
+                            ghost: true,
                         },
                     ]}
                 />
-                <Game
+                <GameListItem
                     title="Letter Boxed"
                     className={styles['index-page__game--letter-boxed']}
+                    icon="/games/letter-boxed-card-icon.svg"
+                    color={COLORS.LETTER_BOXED}
                     buttons={[
                         {
-                            content: 'Today',
+                            children: 'Today',
                             to: '/letter-boxed/game',
-                            className:
-                                styles['index-page__game__button--solid'],
                         },
                         {
-                            content: 'Practice',
+                            children: 'Practice',
                             to: '/letter-boxed/practice',
+                            ghost: true,
                         },
                     ]}
                 />
             </section>
-        </div>
+        </Layout>
     );
 };

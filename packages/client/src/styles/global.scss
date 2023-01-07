@@ -1,3 +1,5 @@
+@import './utils/fonts';
+
 html, body {
     margin: 0;
     padding: 0;
@@ -13,4 +15,14 @@ html, body {
     display: grid;
     grid-template-columns: 1fr;
     grid-template-rows: 1fr;
+}
+
+h1 {
+    font-family: 'Roboto SerifVariable';
+    font-weight: 700;
+}
+
+h2 {
+    font-family: 'Roboto SerifVariable';
+    font-weight: 600;
 }

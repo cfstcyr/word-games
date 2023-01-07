@@ -1,0 +1,35 @@
+@import '../../styles/utils/animations';
+@import '../../styles/utils/variables';
+
+.game-message {
+    height: calc(1.2em + 12px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &__error,
+    &__message {
+        padding: 4px 8px;
+        font-size: 0.9em;
+        border-radius: 4px;
+    }
+
+    &__error {
+        background-color: black;
+        color: white;
+
+        &--animate {
+            animation: wiggle 0.25s linear 0s 2;
+        }
+    }
+
+    &__message {
+        background-color: white;
+        border: solid 1px $color--gray;
+
+        &--animate {
+            animation: moveup 0.8s linear;
+        }
+    }
+}

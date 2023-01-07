@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom/client';
 import App from './App';
 import { Provider } from './modules/provider';
 import reportWebVitals from './reportWebVitals';
+import '@fontsource/roboto-serif/variable-full.css';
 import './styles/global.scss';
-import './fonts/fontawesome/css/all.min.css';
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement,

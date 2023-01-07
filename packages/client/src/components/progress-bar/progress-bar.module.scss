@@ -1,0 +1,40 @@
+@import '../../styles/utils/variables';
+
+.progress-bar {
+    $rounded: 100px;
+    
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 16px;
+
+    &__bar {
+        background-color: $color--gray;
+        height: 8px;
+        width: 100%;
+        border-radius: $rounded;
+    }
+    
+    &__progress {
+        width: 50%;
+        height: 100%;
+        background-color: gray;
+        border-radius: $rounded;
+    }
+
+    &__number {
+        display: flex;
+        gap: 2px;
+        align-items: flex-end;
+
+        &__current {
+            font-weight: 600;
+        }
+
+        &__separator,
+        &__max {
+            opacity: 0.55;
+            font-size: 0.8em;
+        }
+    }
+}

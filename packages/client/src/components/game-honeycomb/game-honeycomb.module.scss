@@ -1,0 +1,78 @@
+@import '../../styles/utils/variables';
+
+.game-honeycomb {
+    $size: 65px;
+    $sizex: $size * 0.89;
+    $space: 8px;
+
+    position: relative;
+
+    &__letter {
+        background-color: $color--gray;
+        font-size: 1.25em;
+        font-weight: 700;
+        height: $size;
+        width: $sizex;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-sizing: border-box;
+        border: none;
+        text-transform: uppercase;
+        clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+        cursor: pointer;
+
+        p {
+            margin: 0;
+            text-transform: capitalize;
+        }
+
+        &:hover {
+            background-color: darken($color--gray, 4);
+        }
+
+        &:active {
+            background-color: darken($color--gray, 9);
+        }
+    }
+
+    &__center {
+        position: absolute;
+        top: $size + $space - ($size * 0.25);
+        left: $sizex + $space;
+        background-color: $color--spelling-bee;
+
+        &:hover {
+            background-color: darken($color--spelling-bee, 6);
+        }
+
+        &:active {
+            background-color: darken($color--spelling-bee, 12);
+        }
+    }
+
+    &__letters {
+        display: grid;
+        grid-template-rows: repeat(3, auto);
+        gap: $space;
+        justify-content: center;
+
+        &__line {
+            display: grid;
+            grid-template-columns: repeat(2, auto);
+            justify-content: center;
+            gap: $space;
+
+            &--2 {
+                gap: $space * 2 + $sizex;
+            }
+
+            &:not(:last-child) {
+                .game-honeycomb__letter {
+                    margin-bottom: -$size * 0.25;
+                }
+            }
+        }
+    }
+}

@@ -1,16 +1,24 @@
 $gray: rgb(226, 226, 226);
 
 .game-layout {
+    $height: 52px;
+
     display: grid;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: 1fr;
     height: 100%;
     width: 100%;
 
     &__nav {
-        padding: 12px 16px;
+        width: 100%;
+        background-color: white;
+        padding: 0 16px;
         display: flex;
         justify-content: center;
         border-bottom: solid 1px $gray;
+        height: $height;
+        box-sizing: border-box;
+        position: fixed;
+        z-index: 1000;
 
         &__content {
             width: 100%;
@@ -34,12 +42,35 @@ $gray: rgb(226, 226, 226);
         }
 
         &__title {
-            font-size: 1.1em;
-            font-weight: 500;
+            font-family: 'Roboto SerifVariable';
+            font-size: 1.2em;
+            font-weight: 550;
         }
 
         p {
             margin: 0;
+        }
+    }
+
+    &__content {
+        margin-top: $height;
+    }
+
+    &--large {
+        $height: 72px;
+
+        .game-layout {
+            &__nav {
+                height: $height;
+
+                &__title {
+                    font-size: 1.6em;
+                }
+            }
+
+            &__content {
+                margin-top: $height;
+            }
         }
     }
 }

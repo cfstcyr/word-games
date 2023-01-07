@@ -1,10 +1,6 @@
 import { GameConfig, GameData, GamePlay } from './game';
 
-export interface GameLetterBoxedConfig extends GameConfig {
-    boxSize: number;
-    minWordLength: number;
-    maxWordCount: number;
-}
+export type GameLetterBoxedConfig = GameConfig;
 
 export interface GameLetterBoxedData extends GameData {
     played: string[];

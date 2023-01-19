@@ -129,10 +129,10 @@ export const SpellingBeeGame: React.FC<Props> = ({ isPractice = false }) => {
             }
         }
 
-        window.addEventListener('keypress', onKeyPress);
+        window.addEventListener('keydown', onKeyPress);
 
         return () => {
-            window.removeEventListener('keypress', onKeyPress);
+            window.removeEventListener('keydown', onKeyPress);
         };
     }, [enter, data]);
 
@@ -177,6 +177,15 @@ export const SpellingBeeGame: React.FC<Props> = ({ isPractice = false }) => {
                     current={score}
                     max={data?.maxScore}
                     color={COLORS.SPELLING_BEE}
+                    steps={
+                        data
+                            ? [
+                                  data.maxScore / 4,
+                                  data.maxScore / 2,
+                                  3 * (data.maxScore / 4),
+                              ]
+                            : undefined
+                    }
                 />
 
                 <div className={styles['found']} onClick={showFoundWords}>

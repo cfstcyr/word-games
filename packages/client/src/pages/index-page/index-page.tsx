@@ -6,11 +6,7 @@ import { Layout } from '../../components/layout/layout';
 
 export const IndexPage: React.FC = () => {
     return (
-        <Layout
-            title="Word Games"
-            contentClassName={styles['index-page']}
-            large
-        >
+        <Layout title="Word Games" contentClassName={styles['index-page']}>
             <section className={styles['index-page__games']}>
                 <GameListItem
                     title="Spelling Bee"

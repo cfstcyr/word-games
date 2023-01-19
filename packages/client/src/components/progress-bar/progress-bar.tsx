@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React from 'react';
 import styles from './progress-bar.module.scss';
 
@@ -6,6 +7,7 @@ interface Props {
     max?: number;
     color?: string;
     showNumber?: boolean;
+    steps?: number[];
 }
 
 export const ProgressBar: React.FC<Props> = ({
@@ -13,6 +15,7 @@ export const ProgressBar: React.FC<Props> = ({
     max = 1,
     showNumber = false,
     color,
+    steps,
 }) => {
     return (
         <div className={styles['progress-bar']}>
@@ -24,6 +27,28 @@ export const ProgressBar: React.FC<Props> = ({
                         backgroundColor: color,
                     }}
                 ></div>
+                {steps && (
+                    <div className={styles['progress-bar__steps']}>
+                        {steps.map((val, i) => (
+                            <div
+                                key={i}
+                                className={classNames(
+                                    styles['progress-bar__steps__step'],
+                                    {
+                                        [styles[
+                                            'progress-bar__steps__step--met'
+                                        ]]: current >= val,
+                                    },
+                                )}
+                                style={{
+                                    left: `${(val * 100) / max}%`,
+                                    backgroundColor:
+                                        current >= val ? color : undefined,
+                                }}
+                            ></div>
+                        ))}
+                    </div>
+                )}
             </div>
 
             {showNumber && (

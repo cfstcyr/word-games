@@ -15,6 +15,8 @@ use crate::constants::letter_boxed::{
 use crate::utils::array::first;
 use crate::utils::string::unique_sort;
 
+pub type WordsList = HashMap<char, Vec<String>>;
+
 pub enum Objective {
     Value(usize),
     Impossible,
@@ -45,12 +47,15 @@ impl LetterBoxed {
         words_list.sort_by(|a, b|
             b.first().unwrap().len().cmp(&a.first().unwrap().len())
         );
+        words_list = words_list[0..words_list.len()/3].to_vec();
 
         let mut stack: Queue<Vec<String>> = Queue::from(words_list);
         let mut current = stack.dequeue();
 
+        let mut i = 0;
         while let Some(c) = current {
             if LetterBoxed::is_using_all_letters(&c) {
+                println!("\nSuccess ({}): {:?}", i, c);
                 return Objective::Value(c.len());
             } else if c.len() < MAX_WORD_COUNT {
                 for next in words
@@ -65,6 +70,7 @@ impl LetterBoxed {
             }
 
             current = stack.dequeue();
+            i += 1;
         }
 
         Objective::Impossible
@@ -84,7 +90,7 @@ impl LetterBoxed {
     pub fn get_word_list(
         letters: &Vec<Vec<char>>,
         dict: &DictionaryNode
-    ) -> HashMap<char, Vec<String>> {
+    ) -> WordsList {
         let mut map = HashMap::new();
 
         for letter in letters.concat() {

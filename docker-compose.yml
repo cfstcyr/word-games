@@ -1,0 +1,17 @@
+version: '3.3'
+
+services:
+  server:
+    image: word-games-server:prod
+    build:
+      context: ./packages/server
+      target: prod
+    ports:
+      - ${SERVER_PORT:-5500}:3000
+  client:
+    image: word-games-client:prod
+    build:
+      context: ./packages/client
+      target: prod
+    ports:
+      - ${SERVER_PORT:-3000}:3000

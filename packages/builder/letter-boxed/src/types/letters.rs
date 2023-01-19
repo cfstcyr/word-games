@@ -1,0 +1,1 @@
+pub type Letters = [[char; 3]; 4];

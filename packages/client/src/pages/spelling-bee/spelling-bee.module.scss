@@ -2,14 +2,15 @@
 @import '../../styles/utils/animations';
 
 .game {
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
+    height: 100%;
+    padding: 48px 24px;
+    display: grid;
+    grid-template-rows: auto auto auto auto 1fr auto;
     gap: 36px;
-    align-items: center;
     width: 100%;
-    max-width: 300px;
+    max-width: 350px;
     margin: 0 auto;
+    box-sizing: border-box;
 
     &--loading {
         pointer-events: none;
@@ -51,6 +52,7 @@
 
 .buttons {
     display: flex;
+    justify-content: center;
     gap: 12px;
 }
 

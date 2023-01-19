@@ -56,8 +56,8 @@ export const Layout: React.FC<PropsWithChildren<Props>> = ({
         >
             <div className={styles['game-layout__nav']}>
                 <div className={styles['game-layout__nav__content']}>
-                    <div>
-                        {backLink && (
+                    <div className={styles['game-layout__nav__buttons']}>
+                        {/* {backLink && (
                             <GameLayoutNavAction
                                 to={backLink}
                                 content={
@@ -70,10 +70,20 @@ export const Layout: React.FC<PropsWithChildren<Props>> = ({
                                     </>
                                 }
                             />
-                        )}
+                        )} */}
                     </div>
 
-                    <p className={styles['game-layout__nav__title']}>{title}</p>
+                    <p className={styles['game-layout__nav__title']}>
+                        {backLink && (
+                            <Link
+                                to={backLink}
+                                className={styles['game-layout__nav__back']}
+                            >
+                                <Icon icon="arrow-left" styling="solid" />
+                            </Link>
+                        )}
+                        {title}
+                    </p>
 
                     <div className={styles['game-layout__nav__actions']}>
                         {buttons?.map((button, i) => (

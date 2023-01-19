@@ -6,6 +6,9 @@
     $space: 8px;
 
     position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 
     &__letter {
         background-color: $color--gray;
@@ -39,8 +42,11 @@
 
     &__center {
         position: absolute;
-        top: $size + $space - ($size * 0.25);
-        left: $sizex + $space;
+        // top: $size + $space - ($size * 0.25);
+        // left: $sizex + $space;
+        top: 50%;
+        left: 50%;
+        translate: -50% -50%;
         background-color: $color--spelling-bee;
 
         &:hover {

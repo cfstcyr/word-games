@@ -160,10 +160,10 @@ export const LetterBoxedGame: React.FC<Props> = ({ isPractice = false }) => {
             if (e.key === 'Backspace') deleteLetter();
         };
 
-        window.addEventListener('keypress', onKeyPress);
+        window.addEventListener('keydown', onKeyPress);
 
         return () => {
-            window.removeEventListener('keypress', onKeyPress);
+            window.removeEventListener('keydown', onKeyPress);
         };
     }, [addLetter, enter, deleteLetter]);
 

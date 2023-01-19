@@ -18,10 +18,10 @@ impl DictionaryNode {
         }
     }
 
-    pub fn new_from_words(words: Vec<String>) -> DictionaryNode {
+    pub fn new_from_words<T>(words: T) -> DictionaryNode where T: Iterator<Item = String> {
         let mut dict = DictionaryNode::new(' ');
 
-        for word in words.iter() {
+        for word in words {
             dict.add_word(uniform(word.into()));
         }
 
@@ -34,7 +34,7 @@ impl DictionaryNode {
             .expect("Dictionary file not found");
 
         DictionaryNode::new_from_words(
-            content.split('\n').map(str::to_string).collect()
+            content.split('\n').map(str::to_string)
         )
     }
 

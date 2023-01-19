@@ -20,12 +20,19 @@ $gray: rgb(226, 226, 226);
         position: fixed;
         z-index: 1000;
 
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
+
         &__content {
             width: 100%;
             max-width: 1024px;
             display: grid;
             grid-template-columns: 1fr auto 1fr;
             align-items: center;
+        }
+
+        &__buttons {
+            margin-left: 36px;
         }
 
         &__button {
@@ -41,10 +48,18 @@ $gray: rgb(226, 226, 226);
             }
         }
 
+        &__back {
+            color: inherit;
+            font-size: 0.8em;
+        }
+
         &__title {
             font-family: 'Roboto SerifVariable';
             font-size: 1.2em;
             font-weight: 550;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
 
         p {

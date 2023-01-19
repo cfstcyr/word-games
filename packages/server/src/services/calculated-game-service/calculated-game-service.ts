@@ -28,8 +28,8 @@ export class CalculatedGameService {
 
                 res(
                     records
-                        .filter(([, , objective]) => Number(objective) > 0)
-                        .map(([, letters, objective]) => ({
+                        .filter(([, objective]) => Number(objective) > 0)
+                        .map(([letters, objective]) => ({
                             letters: chunk(letters.split(','), 3),
                             objective: Number(objective),
                         })),

@@ -26,11 +26,8 @@ describe('GameLetterBoxed', () => {
             .addFromWords(DICTIONARY_NAME, DICTIONARY);
 
         game = new GameLetterBoxed({
-            boxSize: 2,
             language: DICTIONARY_NAME,
             level: 'default',
-            minWordLength: 2,
-            maxWordCount: 8,
             type: 'practice',
         });
     });

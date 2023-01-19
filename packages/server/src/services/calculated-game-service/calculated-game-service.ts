@@ -15,7 +15,7 @@ export class CalculatedGameService {
         return new Promise((res, reject) => {
             const path = resolve(
                 __dirname,
-                `../../constants/calculated-games/letter-boxed.${language}.txt`,
+                `../../../assets/calculated-games/letter-boxed.${language}.txt`,
             );
 
             if (!existsSync(path))

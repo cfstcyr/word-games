@@ -43,11 +43,11 @@ export class Application {
     private configureService() {
         this.dictionaryService.addFromPath(
             'fr',
-            resolve(__dirname, './constants/dictionary/fr.txt'),
+            resolve(__dirname, '../assets/dictionary/fr.txt'),
         );
         this.dictionaryService.addFromPath(
             'en',
-            resolve(__dirname, './constants/dictionary/en.txt'),
+            resolve(__dirname, '../assets/dictionary/en.txt'),
         );
     }
 

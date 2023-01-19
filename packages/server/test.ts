@@ -20,16 +20,13 @@ import { GameLetterBoxed } from './src/classes/game-letter-boxed/game-letter-box
     ];
 
     const game = new GameLetterBoxed({
-        boxSize: 3,
         language: 'fr',
         level: 'default',
-        maxWordCount: 5,
-        minWordLength: 3,
         type: 'practice',
         seed: '03012023',
     });
 
-    console.log(await game['checkLetters'](letters));
+    // console.log(await game['checkLetters'](letters));
 
     // let initialized = false;
     // const start = Date.now();

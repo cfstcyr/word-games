@@ -14,4 +14,4 @@ services:
       context: ./packages/client
       target: prod
     ports:
-      - ${SERVER_PORT:-3000}:3000
+      - ${CLIENT_PORT:-3000}:3000
